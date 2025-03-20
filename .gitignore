@@ -11,6 +11,7 @@
 *.dylib
 *.test
 *.out
+*.txt
 go.work
 go.work.sum
 

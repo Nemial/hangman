@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"embed"
 	"fmt"
 	"log"
 	"math/rand"
@@ -11,7 +12,7 @@ import (
 
 func main() {
 	var (
-		words    = []string{"яблоко", "груша", "апельсин", "мандарин", "виноград", "космический", "параплан"}
+		words    = loadWords()
 		secret   = words[rand.Intn(len(words))]
 		attempts = 5
 		reader   = bufio.NewReader(os.Stdin)
@@ -72,4 +73,28 @@ func main() {
 			}
 		}
 	}
+}
+
+//go:embed words.txt
+var f embed.FS
+
+func loadWords() []string {
+	fileName := "words.txt"
+	file, err := f.Open(fileName)
+
+	if err != nil {
+		log.Fatal("Ошибка открытия файла:", err)
+		return nil
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	var words []string
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		words = append(words, line)
+	}
+
+	return words
 }
